@@ -1,21 +1,11 @@
 # Protohacker
 
-**TODO: Add description**
+Solutions for [Protohackers](https://protohackers.com) :)
 
-## Installation
+## `lib/protohacker/tcp_server`
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `protohacker` to your list of dependencies in `mix.exs`:
+A generic TCP server that passes client requests to a client handler
 
-```elixir
-def deps do
-  [
-    {:protohacker, "~> 0.1.0"}
-  ]
-end
-```
+## `lib/protohacker/*/client_handler`
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/protohacker>.
-
+Manages the receive loop for individual clients connected to a TCP server
