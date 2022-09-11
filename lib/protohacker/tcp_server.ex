@@ -19,9 +19,9 @@ defmodule Protohacker.TcpServer do
 
     listen_opts = Keyword.merge(default_opts, custom_opts)
 
-    {:ok, listen_socket} = :gen_tcp.listen(port, [:binary | listen_opts] |> IO.inspect())
+    {:ok, listen_socket} = :gen_tcp.listen(port, [:binary | listen_opts])
 
-    Logger.debug("#{client_handler} accepting connections on port #{port}")
+    Logger.debug("#{inspect(client_handler)}: Accepting connections on port #{port}")
 
     accept_client(client_handler, listen_socket, task_supervisor)
   end
@@ -30,7 +30,7 @@ defmodule Protohacker.TcpServer do
     {:ok, client_socket} = :gen_tcp.accept(listen_socket)
 
     Task.Supervisor.async(task_supervisor, fn ->
-      Logger.debug("New Client Connected (#{inspect(client_socket)})")
+      Logger.debug("#{inspect(client_handler)}: Client Connected (#{inspect(client_socket)})")
       client_handler.start(client_socket)
     end)
 

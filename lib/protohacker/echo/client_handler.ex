@@ -8,8 +8,8 @@ defmodule Protohacker.Echo.ClientHandler do
          :ok <- :gen_tcp.send(client_socket, data) do
       serve(client_socket)
     else
-      _ ->
-        Logger.debug("Closing (#{inspect(client_socket)})")
+      _error ->
+        Logger.debug("#{inspect(__MODULE__)}: Client Closed (#{inspect(client_socket)})")
         :gen_tcp.close(client_socket)
     end
   end

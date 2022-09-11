@@ -7,7 +7,7 @@ defmodule Protohacker.Bank.ClientHandler do
   end
 
   @message_size 9
-  def serve(client_socket, asset_table) do
+  defp serve(client_socket, asset_table) do
     case :gen_tcp.recv(client_socket, @message_size) do
       {:ok, message} ->
         process_message(message, asset_table)
@@ -15,8 +15,8 @@ defmodule Protohacker.Bank.ClientHandler do
 
         serve(client_socket, asset_table)
 
-      error ->
-        Logger.debug("Closing (#{inspect(client_socket)}): #{inspect(error)}")
+      _error ->
+        Logger.debug("#{inspect(__MODULE__)}: Client Closed (#{inspect(client_socket)})")
         :gen_tcp.close(client_socket)
     end
   end
@@ -56,6 +56,7 @@ defmodule Protohacker.Bank.ClientHandler do
 
   defp process_message(message, _table), do: {:error, message}
 
+  # Generated with :ets.fun2ms/1
   defp build_matchspec(min, max) do
     [{{:"$1", :"$2"}, [{:andalso, {:>=, :"$1", min}, {:"=<", :"$1", max}}], [:"$2"]}]
   end

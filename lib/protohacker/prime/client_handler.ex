@@ -13,8 +13,8 @@ defmodule Protohacker.Prime.ClientHandler do
          :ok <- send_response(encoded_response, client_socket) do
       serve(client_socket)
     else
-      error ->
-        Logger.info("Closing (#{inspect(client_socket)}): #{inspect(error)}")
+      _error ->
+        Logger.debug("#{inspect(__MODULE__)}: Client Closed (#{inspect(client_socket)})")
         :gen_tcp.close(client_socket)
     end
   end
