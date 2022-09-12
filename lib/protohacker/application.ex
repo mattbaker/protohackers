@@ -4,9 +4,13 @@ defmodule Protohacker.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Protohacker.Echo.Supervisor, port: 3000},
-      {Protohacker.Prime.Supervisor, port: 3001},
-      {Protohacker.Bank.Supervisor, port: 3002}
+      {Task.Supervisor, name: Protohacker.TaskSupervisor},
+      {Protohacker.TcpListener, server: Protohacker.Echo.Server, port: 3000},
+      {Protohacker.TcpListener,
+       server: Protohacker.Prime.Server,
+       port: 3001,
+       listen_opts: [packet: :line, buffer: 1024 * 1000]},
+      {Protohacker.TcpListener, server: Protohacker.Bank.Server, port: 3002}
     ]
 
     opts = [strategy: :one_for_one, name: Protohacker.Supervisor]

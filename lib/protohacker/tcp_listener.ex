@@ -2,6 +2,11 @@ defmodule Protohacker.TcpListener do
   require Logger
 
   def start_link(opts) do
+    pid = spawn_link(__MODULE__, :init, [opts])
+    {:ok, pid}
+  end
+
+  def init(opts) do
     server = Keyword.fetch!(opts, :server)
     port = Keyword.fetch!(opts, :port)
     custom_opts = Keyword.get(opts, :listen_opts, [])
@@ -29,7 +34,7 @@ defmodule Protohacker.TcpListener do
   defp accept_client(server, listen_socket, task_supervisor) do
     {:ok, client_socket} = :gen_tcp.accept(listen_socket)
 
-    Task.Supervisor.async(task_supervisor, fn ->
+    Task.Supervisor.async(Protohacker.TaskSupervisor, fn ->
       Logger.debug("#{inspect(server)}: Client Connected (#{inspect(client_socket)})")
       server.start(client_socket)
     end)
@@ -38,9 +43,9 @@ defmodule Protohacker.TcpListener do
   end
 
   def child_spec(opts) do
-    Supervisor.child_spec(
-      {Task, fn -> __MODULE__.start_link(opts) end},
-      id: Keyword.fetch!(opts, :server)
-    )
+    %{
+      id: {__MODULE__, opts[:server]},
+      start: {__MODULE__, :start_link, [opts]}
+    }
   end
 end
