@@ -11,7 +11,7 @@ defmodule Protohacker.Prime.Supervisor do
       {Task.Supervisor, name: Protohacker.Prime.TaskSupervisor},
       {Protohacker.TcpListener,
        [
-         serer: Protohacker.Prime.Server,
+         server: Protohacker.Prime.Server,
          task_supervisor: Protohacker.Prime.TaskSupervisor,
          port: port,
          listen_opts: [packet: :line, buffer: 1024 * 1000]

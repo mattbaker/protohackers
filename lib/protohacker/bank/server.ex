@@ -1,47 +1,34 @@
 defmodule Protohacker.Bank.Server do
   require Logger
+  import Protohacker.BinaryShorthand
 
-  def start(client_socket) do
+  def start(socket) do
     asset_table = :ets.new(:asset_data, [:set])
-    serve(client_socket, asset_table)
+    serve(socket, asset_table)
   end
 
   @message_size 9
-  defp serve(client_socket, asset_table) do
-    case :gen_tcp.recv(client_socket, @message_size) do
+  defp serve(socket, asset_table) do
+    case :gen_tcp.recv(socket, @message_size) do
       {:ok, message} ->
         process_message(message, asset_table)
-        |> reply(client_socket)
+        |> reply(socket)
 
-        serve(client_socket, asset_table)
+        serve(socket, asset_table)
 
       _error ->
-        Logger.debug("#{inspect(__MODULE__)}: Client Closed (#{inspect(client_socket)})")
-        :gen_tcp.close(client_socket)
+        Logger.debug("#{inspect(__MODULE__)}: Client Closed (#{inspect(socket)})")
+        :gen_tcp.close(socket)
     end
   end
 
-  defp process_message(
-         <<
-           "I",
-           timestamp::signed-integer-size(32),
-           price::signed-integer-size(32)
-         >>,
-         table
-       ) do
+  defp process_message(<<"I", timestamp::int32(), price::int32()>>, table) do
     :ets.insert(table, {timestamp, price})
 
     {:insert, :ok}
   end
 
-  defp process_message(
-         <<
-           "Q",
-           min_time::signed-integer-size(32),
-           max_time::signed-integer-size(32)
-         >>,
-         table
-       ) do
+  defp process_message(<<"Q", min_time::int32(), max_time::int32()>>, table) do
     mean =
       :ets.select(table, build_matchspec(min_time, max_time))
       |> case do
@@ -61,8 +48,8 @@ defmodule Protohacker.Bank.Server do
     [{{:"$1", :"$2"}, [{:andalso, {:>=, :"$1", min}, {:"=<", :"$1", max}}], [:"$2"]}]
   end
 
-  defp pack(int32), do: <<int32::signed-integer-size(32)>>
+  defp pack(int32), do: <<int32::int32()>>
 
-  defp reply({:query, mean}, client_socket), do: :gen_tcp.send(client_socket, mean)
+  defp reply({:query, mean}, socket), do: :gen_tcp.send(socket, mean)
   defp reply(_, _), do: nil
 end

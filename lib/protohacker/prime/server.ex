@@ -1,21 +1,21 @@
 defmodule Protohacker.Prime.Server do
   require Logger
 
-  def start(client_socket) do
-    serve(client_socket)
+  def start(socket) do
+    serve(socket)
   end
 
-  defp serve(client_socket) do
-    with {:ok, json} <- :gen_tcp.recv(client_socket, 0),
+  defp serve(socket) do
+    with {:ok, json} <- :gen_tcp.recv(socket, 0),
          {:ok, data} <- Jason.decode(json),
          {:ok, response} <- build_response(data),
          {:ok, encoded_response} <- Jason.encode(response),
-         :ok <- send_response(encoded_response, client_socket) do
-      serve(client_socket)
+         :ok <- send_response(encoded_response, socket) do
+      serve(socket)
     else
       _error ->
-        Logger.debug("#{inspect(__MODULE__)}: Client Closed (#{inspect(client_socket)})")
-        :gen_tcp.close(client_socket)
+        Logger.debug("#{inspect(__MODULE__)}: Client Closed (#{inspect(socket)})")
+        :gen_tcp.close(socket)
     end
   end
 
