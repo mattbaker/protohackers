@@ -9,9 +9,9 @@ defmodule Protohacker.Prime.Supervisor do
   def init(port) do
     children = [
       {Task.Supervisor, name: Protohacker.Prime.TaskSupervisor},
-      {Protohacker.TcpServer,
+      {Protohacker.TcpListener,
        [
-         client_handler: Protohacker.Prime.ClientHandler,
+         serer: Protohacker.Prime.Server,
          task_supervisor: Protohacker.Prime.TaskSupervisor,
          port: port,
          listen_opts: [packet: :line, buffer: 1024 * 1000]

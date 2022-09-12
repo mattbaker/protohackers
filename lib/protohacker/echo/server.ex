@@ -1,4 +1,4 @@
-defmodule Protohacker.Echo.ClientHandler do
+defmodule Protohacker.Echo.Server do
   require Logger
 
   def start(client_socket), do: serve(client_socket)

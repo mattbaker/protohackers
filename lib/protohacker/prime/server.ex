@@ -1,4 +1,4 @@
-defmodule Protohacker.Prime.ClientHandler do
+defmodule Protohacker.Prime.Server do
   require Logger
 
   def start(client_socket) do

@@ -9,9 +9,9 @@ defmodule Protohacker.Echo.Supervisor do
   def init(port) do
     children = [
       {Task.Supervisor, name: Protohacker.Echo.TaskSupervisor},
-      {Protohacker.TcpServer,
+      {Protohacker.TcpListener,
        [
-         client_handler: Protohacker.Echo.ClientHandler,
+         server: Protohacker.Echo.Server,
          task_supervisor: Protohacker.Echo.TaskSupervisor,
          port: port
        ]}

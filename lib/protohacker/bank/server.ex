@@ -1,4 +1,4 @@
-defmodule Protohacker.Bank.ClientHandler do
+defmodule Protohacker.Bank.Server do
   require Logger
 
   def start(client_socket) do

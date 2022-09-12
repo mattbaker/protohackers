@@ -9,9 +9,9 @@ defmodule Protohacker.Bank.Supervisor do
   def init(port) do
     children = [
       {Task.Supervisor, name: Protohacker.Bank.TaskSupervisor},
-      {Protohacker.TcpServer,
+      {Protohacker.TcpListener,
        [
-         client_handler: Protohacker.Bank.ClientHandler,
+         server: Protohacker.Bank.Server,
          task_supervisor: Protohacker.Bank.TaskSupervisor,
          port: port,
          listen_opts: [packet: :raw]
