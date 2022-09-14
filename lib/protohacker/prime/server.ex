@@ -1,9 +1,7 @@
 defmodule Protohacker.Prime.Server do
   require Logger
 
-  def start(socket) do
-    serve(socket)
-  end
+  def start(socket, _opts), do: serve(socket)
 
   defp serve(socket) do
     with {:ok, json} <- :gen_tcp.recv(socket, 0),

@@ -2,7 +2,7 @@ defmodule Protohacker.Bank.Server do
   require Logger
   import Protohacker.BinaryShorthand
 
-  def start(socket) do
+  def start(socket, _opts) do
     asset_table = :ets.new(:asset_data, [:set])
     serve(socket, asset_table)
   end
@@ -31,10 +31,7 @@ defmodule Protohacker.Bank.Server do
   defp process_message(<<"Q", min_time::int32(), max_time::int32()>>, table) do
     mean =
       :ets.select(table, build_matchspec(min_time, max_time))
-      |> case do
-        [] -> 0
-        prices -> Enum.sum(prices) / length(prices)
-      end
+      |> mean()
       |> floor()
       |> pack()
 
@@ -47,6 +44,9 @@ defmodule Protohacker.Bank.Server do
   defp build_matchspec(min, max) do
     [{{:"$1", :"$2"}, [{:andalso, {:>=, :"$1", min}, {:"=<", :"$1", max}}], [:"$2"]}]
   end
+
+  defp mean([]), do: 0
+  defp mean(prices), do: Enum.sum(prices) / length(prices)
 
   defp pack(int32), do: <<int32::int32()>>
 

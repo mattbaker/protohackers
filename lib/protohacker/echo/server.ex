@@ -1,7 +1,7 @@
 defmodule Protohacker.Echo.Server do
   require Logger
 
-  def start(socket), do: serve(socket)
+  def start(socket, _opts), do: serve(socket)
 
   defp serve(socket) do
     with {:ok, data} <- :gen_tcp.recv(socket, 0),
