@@ -20,6 +20,8 @@ The fact that gen_tcp's default buffer size is pretty low caught me, it caused b
 
 I also tried out `Stream.drop_while` to do the prime checker, the algorithm was lifed from some Java solution I found online somewhere :)
 
+I used Jason for JSON parsing.
+
 ## Problem: 2 `lib/protohacker/bank/server.ex`
 
 Erlang/Elixir's binary pattern matching was super userful here. It made it easy to parse the messages and interpret the bytes (signed integer 32s). The [docs for binary pattern matching](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#%3C%3C%3E%3E/1) are kind of hard to find.
@@ -28,4 +30,8 @@ With gen_tcp you can specify the number of bytes you want to read at a time, in 
 
 I used ETS to store the asset price entries with the timestamp as the key, with one table per client. I used matchspecs to define a match that included the max/min test. This worked pretty well and was plenty fast enough. ETS is a pretty optimized data store so I had a feeling it would handle the job.
 
-I used Jason for JSON parsing.
+## Problem: 3 `lib/protohacker/chat/server.ex`
+
+I created a GenServer representing the room. This made it easy to have a central process that could control receiving and broadcasting across users as needed.
+
+Since a process handles the messages in its process inbox sequentially it also forced async user communication to become synchronous since it was acting as a central conduit. I had a feeling this could help me avoid some race conditions so I went for it. The test didn't create the kind of load that would overwhelm this "single process architecture."
