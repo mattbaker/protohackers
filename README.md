@@ -35,3 +35,9 @@ I used ETS to store the asset price entries with the timestamp as the key, with 
 I created a GenServer representing the room. This made it easy to have a central process that could control receiving and broadcasting across users as needed.
 
 Since a process handles the messages in its process inbox sequentially it also forced async user communication to become synchronous since it was acting as a central conduit. I had a feeling this could help me avoid some race conditions so I went for it. The test didn't create the kind of load that would overwhelm this "single process architecture."
+
+## Problem: 4 `lib/protohacker/unusual_database/server.ex`
+
+I used :gen_udp in active mode this time, so I handled incoming packets as messages being sent to the process (I used a GenServer). I wonder if this only worked well because each request was a single UDP packet, seems like otherwise I would need to do buffering (in which case I might go for passive mode).
+
+There didn't seem to be anything too tricky this time, just learning :gen_udp which was very similar to gen_tcp. The only thing that tripped me up was my Regex, which wasn't allowing for newlines, I fixed this by adding the `s` modified to the pattern.
