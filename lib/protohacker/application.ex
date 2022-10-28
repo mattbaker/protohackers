@@ -15,7 +15,8 @@ defmodule Protohacker.Application do
        listen_opts: [packet: :line, buffer: 1024 * 1000]},
       {Protohacker.TcpListener, server: Protohacker.Bank.Server, port: 3002},
       {Protohacker.Chat.Supervisor, port: 3003},
-      {Protohacker.UnusualDatabase.Server, port: 3004}
+      {Protohacker.UnusualDatabase.Server, port: 3004},
+      {Protohacker.Mitm.Supervisor, port: 3005}
     ]
 
     opts = [strategy: :one_for_one, name: Protohacker.Supervisor]
