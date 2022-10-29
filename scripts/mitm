@@ -10,4 +10,4 @@
 #  and forward it to port 3000:
 #  mitm 4001 3000
 
-socat -v -x TCP-LISTEN:$1 TCP:localhost:$2
+socat -v TCP-LISTEN:$1,fork,reuseaddr TCP:localhost:$2

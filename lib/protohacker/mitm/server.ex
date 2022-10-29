@@ -7,7 +7,11 @@ defmodule Protohacker.Mitm.Server do
         Protohacker.Mitm.DynamicSupervisor,
         {
           Protohacker.Mitm.User,
-          [downstream_host: "localhost", downstream_port: 3003, client_socket: client_sock]
+          [
+            downstream_host: "chat.protohackers.com",
+            downstream_port: 16963,
+            client_socket: client_sock
+          ]
         }
       )
 
