@@ -13,7 +13,11 @@ defmodule Protohacker.Mitm.Supervisor do
        server: Protohacker.Mitm.Server,
        port: port,
        listen_opts: [packet: :line, buffer: 1024 * 1000],
-       server_opts: [no_async: true]}
+       server_opts: [
+         no_async: true,
+         downstream_host: "chat.protohackers.com",
+         downstream_port: 16963
+       ]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

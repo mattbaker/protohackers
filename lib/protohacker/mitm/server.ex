@@ -1,17 +1,13 @@
 defmodule Protohacker.Mitm.Server do
   require Logger
 
-  def start(client_sock, _opts) do
+  def start(client_sock, opts) do
     {:ok, pid} =
       DynamicSupervisor.start_child(
         Protohacker.Mitm.DynamicSupervisor,
         {
           Protohacker.Mitm.User,
-          [
-            downstream_host: "chat.protohackers.com",
-            downstream_port: 16963,
-            client_socket: client_sock
-          ]
+          Keyword.merge(opts, client_socket: client_sock)
         }
       )
 
