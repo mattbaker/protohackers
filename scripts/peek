@@ -3,11 +3,11 @@
 # a handy script to intercept and log TCP traffic locally
 #
 # usage:
-#  mitm source_port destination_port
+#  peek source_port destination_port
 #
 # example:
 #  intercept TCP traffic to 4001, spy on it,
 #  and forward it to port 3000:
-#  mitm 4001 3000
+#  peek 4001 3000
 
 socat -v TCP-LISTEN:$1,fork,reuseaddr TCP:localhost:$2
