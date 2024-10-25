@@ -40,16 +40,23 @@ defmodule Protohacker.TcpListener do
     {:ok, client_socket} = :gen_tcp.accept(listen_socket)
 
     if server_opts[:no_async] do
-      Logger.debug("#{inspect(server)}: Client Connected (#{inspect(client_socket)})")
-      server.start(client_socket, server_opts)
+      start_server(server, client_socket, server_opts)
     else
-      Task.Supervisor.async(Protohacker.TaskSupervisor, fn ->
-        Logger.debug("#{inspect(server)}: Client Connected (#{inspect(client_socket)})")
-        server.start(client_socket, server_opts)
-      end)
+      start_server_async(server, client_socket, server_opts)
     end
 
     accept_client(server, listen_socket, task_supervisor, server_opts)
+  end
+
+  defp start_server_async(server, client_socket, server_opts) do
+    Task.Supervisor.async(Protohacker.TaskSupervisor, fn ->
+      start_server(server, client_socket, server_opts)
+    end)
+  end
+
+  defp start_server(server, client_socket, server_opts) do
+    Logger.debug("#{inspect(server)}: Client Connected (#{inspect(client_socket)})")
+    server.start(client_socket, server_opts)
   end
 
   def child_spec(opts) do

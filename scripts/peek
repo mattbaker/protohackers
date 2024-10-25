@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# mitm
+# peek
 # a handy script to intercept and log TCP traffic locally
 #
 # usage:

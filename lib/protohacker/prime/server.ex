@@ -40,8 +40,7 @@ defmodule Protohacker.Prime.Server do
   defp has_factors?(n) do
     limit = :math.sqrt(n) |> floor()
 
-    5..limit//6
-    |> Stream.drop_while(fn i ->
+    Stream.drop_while(5..limit//6, fn i ->
       rem(n, i) != 0 && rem(n, i + 2) != 0
     end)
     |> Enum.empty?()

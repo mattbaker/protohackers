@@ -39,7 +39,7 @@ defmodule Protohacker.UnusualDatabase.Server do
   defp parse(message), do: {:error, message}
 
   defp retrieve(_db, "version"), do: "version=SwigServer 0.1"
-  defp retrieve(db, key), do: "#{key}=#{Map.get(db, key)}" |> IO.inspect()
+  defp retrieve(db, key), do: "#{key}=#{Map.get(db, key)}"
 
   defp insert(db, "version", _key), do: db
   defp insert(db, key, value), do: Map.put(db, key, value)

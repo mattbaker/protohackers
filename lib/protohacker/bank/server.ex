@@ -11,8 +11,7 @@ defmodule Protohacker.Bank.Server do
   defp serve(socket, asset_table) do
     case :gen_tcp.recv(socket, @message_size) do
       {:ok, message} ->
-        process_message(message, asset_table)
-        |> reply(socket)
+        process_message(message, asset_table) |> reply(socket)
 
         serve(socket, asset_table)
 
@@ -29,13 +28,11 @@ defmodule Protohacker.Bank.Server do
   end
 
   defp process_message(<<"Q", min_time::int32(), max_time::int32()>>, table) do
-    mean =
-      :ets.select(table, build_matchspec(min_time, max_time))
-      |> mean()
-      |> floor()
-      |> pack()
-
-    {:query, mean}
+    :ets.select(table, build_matchspec(min_time, max_time))
+    |> mean()
+    |> floor()
+    |> pack()
+    |> then(fn mean -> {:query, mean} end)
   end
 
   defp process_message(message, _table), do: {:error, message}
